@@ -1,3 +1,5 @@
+//This file is responsible for connecting to the MongoDB database using Mongoose.
+//It exports a function that can be called to establish the connection.
 const mongoose = require("mongoose");
 
 const connectDB = async () => {
