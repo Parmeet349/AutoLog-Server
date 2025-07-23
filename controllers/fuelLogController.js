@@ -39,6 +39,16 @@ const getFuelLogs = async (req, res) => {
   }
 };
 
+const getVehicleFuelLogs = async (req, res) => {
+  try {
+    const logs = await FuelLog.find({ user: req.user, vehicle: req.params.id }).sort({ fuelDate: -1 });
+    res.json(logs);
+  } catch (error) {
+    res.status(500).json({ msg: "Server error" });
+  }
+}
+
+
 const updateFuelLog = async (req, res) => {
   try {
     const updated = await FuelLog.findOneAndUpdate(
@@ -75,4 +85,5 @@ module.exports = {
   getFuelLogs,
   updateFuelLog,
   deleteFuelLog,
+  getVehicleFuelLogs,
 };
