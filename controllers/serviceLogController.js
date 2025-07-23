@@ -40,6 +40,16 @@ const getServices = async (req, res) => {
   }
 };
 
+// Get services by vehicle ID
+const getVehicleServices = async (req, res) => {
+  try {
+    const services = await ServiceLog.find({ user: req.user, vehicle: req.params.id }).sort({ serviceDate: -1 });
+    res.json(services);
+  } catch (err) {
+    res.status(500).json({ msg: "Server error" });
+  }
+};
+
 // Update a service
 const updateService = async (req, res) => {
   try {
@@ -76,6 +86,7 @@ const deleteService = async (req, res) => {
 module.exports = {
   addService,
   getServices,
+  getVehicleServices,
   updateService,
   deleteService,
 };
