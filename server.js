@@ -32,6 +32,10 @@ app.get("/api/health", (req, res) => {
 const authRoutes = require("./routes/auth");
 app.use("/api/auth", authRoutes);
 
+// This route handles user information retrieval
+const userRoutes = require("./routes/user");
+app.use("/api/userInfo", userRoutes);
+
 // This route handles vehicle management (CRUD operations)
 const vehicleRoutes = require("./routes/vehicle");
 app.use("/api/vehicles", vehicleRoutes);
