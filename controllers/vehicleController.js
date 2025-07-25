@@ -82,11 +82,19 @@ const deleteVehicle = async (req, res) => {
   const { id } = req.params;
 
   try {
+    // const vehicle = await Vehicle.findOneAndDelete({ _id: id, user: req.user });
+    // Delete the vehicle by ID and user also delete the service logs and fuel logs associated with it
     const vehicle = await Vehicle.findOneAndDelete({ _id: id, user: req.user });
-
     if (!vehicle) {
       return res.status(404).json({ msg: "Vehicle not found" });
     }
+    // Also delete associated service logs and fuel logs
+    await ServiceLog.deleteMany({ vehicle: id });
+    await FuelLog.deleteMany({ vehicle: id });
+
+    // if (!vehicle) {
+    //   return res.status(404).json({ msg: "Vehicle not found" });
+    // }
 
     res.status(200).json({ 
       success: true,
