@@ -1,4 +1,6 @@
 const Vehicle = require("../models/Vehicle");
+const ServiceLog = require("../models/ServiceLog");
+const FuelLog = require("../models/FuelLog");
 
 // @desc    Add a vehicle
 const addVehicle = async (req, res) => {
