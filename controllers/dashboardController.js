@@ -69,8 +69,49 @@ const getUserDashboardStats = async (req, res) => {
     
     const totalServiceCost = serviceLogs.reduce((acc, log) => acc + (log.cost || 0), 0);
     const totalFuelCost = fuelLogs.reduce((acc, log) => acc + (log.totalCost || 0), 0);
-    const totalKmDriven = serviceLogs.reduce((acc, log) => acc + (log.odometer || 0), 0);
+    // const totalKmDriven = serviceLogs.reduce((acc, log) => acc + (log.odometer || 0), 0);
     const totalLitres = fuelLogs.reduce((acc, log) => acc + (log.litres || 0), 0);
+
+    // Get the first service log odometer reading
+    const firstServiceLog = serviceLogs.sort((a, b) => new Date(a.serviceDate) - new Date(b.serviceDate))[0];
+    const firstOdometer = firstServiceLog ? firstServiceLog.odometer : 0;
+    console.log("First Odometer Reading:", firstOdometer);
+    // Get the last service log odometer reading
+    const lastServiceLog = serviceLogs.sort((a, b) => new Date(b.serviceDate) - new Date(a.serviceDate))[0];
+    const lastOdometer = lastServiceLog ? lastServiceLog.odometer : 0;
+    console.log("Last Odometer Reading:", lastOdometer);
+
+
+    // Calculate total distance driven
+    const totalDistanceDriven = lastOdometer - firstOdometer;
+    console.log("Total Distance Driven:", totalDistanceDriven);
+
+
+    // Get the first fuel log odometer reading
+    const firstFuelLog = fuelLogs.sort((a, b) => new Date(a.fuelDate) - new Date(b.fuelDate))[0];
+    const firstFuelOdometer = firstFuelLog ? firstFuelLog.odometer : 0;
+    console.log("First Fuel Odometer Reading:", firstFuelOdometer);
+    // Get the last fuel log odometer reading
+    const lastFuelLog = fuelLogs.sort((a, b) => new Date(b.fuelDate) - new Date(a.fuelDate))[0];
+    const lastFuelOdometer = lastFuelLog ? lastFuelLog.odometer : 0;
+    console.log("Last Fuel Odometer Reading:", lastFuelOdometer);
+
+
+    // Calculate total distance driven from fuel logs
+    const totalFuelDistanceDriven = lastFuelOdometer - firstFuelOdometer;
+    console.log("Total Distance Driven from Fuel Logs:", totalFuelDistanceDriven);
+
+    // Check firstOdometer and firstFuelOdometer which is less
+    const totalKmDriven = Math.min(firstOdometer, firstFuelOdometer) ? totalDistanceDriven : totalFuelDistanceDriven;
+    console.log("Total Km Driven:", totalKmDriven);
+
+    // Check lastOdometer and lastFuelOdometer which is greater
+    const totalKmDrivenEnd = Math.max(lastOdometer, lastFuelOdometer) ? totalDistanceDriven : totalFuelDistanceDriven;
+    console.log("Total Km Driven End:", totalKmDrivenEnd);
+
+    // Calculate overall distance driven
+    const overallDistanceDriven = totalKmDriven + totalKmDrivenEnd;
+    console.log("Overall Distance Driven:", overallDistanceDriven);
 
     // Average fuel cost per litre
     const averageFuelCostPerLitre = totalLitres ? (totalFuelCost / totalLitres).toFixed(2) : 0;
@@ -127,7 +168,7 @@ const getUserDashboardStats = async (req, res) => {
     res.json({
       totalFuelCost,
       totalServiceCost,
-      totalKmDriven,
+      totalKmDriven: overallDistanceDriven,
       averageFuelCostPerLitre,
       fuelTrend,
       fuelTrendArray,
